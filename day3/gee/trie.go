@@ -5,8 +5,6 @@ import (
 	"strings"
 )
 
-// 添加trie树的目的是实现动态路由
-// 前缀树的两个基本操作：1.insert； 2.search
 type node struct {
 	pattern  string  //待匹配路由
 	part     string  //路由的一部分
@@ -18,7 +16,6 @@ func (n *node) String() string {
 	return fmt.Sprintf("node{pattern=%s, part=%s, isWild=%t}", n.pattern, n.part, n.isWild)
 }
 
-// 插入
 func (n *node) insert(pattern string, parts []string, height int) {
 	if len(parts) == height {
 		n.pattern = pattern
@@ -34,7 +31,6 @@ func (n *node) insert(pattern string, parts []string, height int) {
 	child.insert(pattern, parts, height+1)
 }
 
-// 查找
 func (n *node) search(parts []string, height int) *node {
 	if len(parts) == height || strings.HasPrefix(n.part, "*") {
 		if n.pattern == "" {
@@ -56,7 +52,6 @@ func (n *node) search(parts []string, height int) *node {
 	return nil
 }
 
-// 遍历树， 返回所有的叶子节点（即所有的路由）
 func (n *node) travel(list *([]*node)) {
 	if n.pattern != "" {
 		*list = append(*list, n)
@@ -66,7 +61,6 @@ func (n *node) travel(list *([]*node)) {
 	}
 }
 
-// 返回第一个匹配的子节点, 用于插入操作
 func (n *node) matchChild(part string) *node {
 	for _, child := range n.children {
 		if child.part == part || child.isWild {
@@ -76,7 +70,6 @@ func (n *node) matchChild(part string) *node {
 	return nil
 }
 
-// 返回所有匹配的子节点，用于查询操作 (这里不止一个的原因是 有“：” 和 ”*“ 这两个通配符)
 func (n *node) matchChildren(part string) []*node {
 	nodes := make([]*node, 0)
 	for _, child := range n.children {
