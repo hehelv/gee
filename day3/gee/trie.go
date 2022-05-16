@@ -6,10 +6,10 @@ import (
 )
 
 type node struct {
-	pattern  string  //待匹配路由
-	part     string  //路由的一部分
-	children []*node //子节点
-	isWild   bool    //part是否含有：或者 *
+	pattern  string
+	part     string
+	children []*node
+	isWild   bool
 }
 
 func (n *node) String() string {
